@@ -201,11 +201,11 @@
 +	if (sweet_sample_names[0] == '-') {
 +		return;
 +	}
-+	(void)tsleep(&chan, PZERO, "sweetsmp", 90 * hz);
-+	for (int i = 0; i < 10; i++) {
++	(void)tsleep(&chan, PZERO, "sweetsmp", 20 * hz);
++	for (int i = 0; i < 30; i++) {
 +		printf("SMP --- sample %d\n", i);
 +		proc_iterate(PROC_ALLPROCLIST, sweet_sample_proc, NULL, NULL, NULL);
-+		(void)tsleep(&chan, PZERO, "sweetsmp", 120 * hz);
++		(void)tsleep(&chan, PZERO, "sweetsmp", 60 * hz);
 +	}
 +}
 +
