@@ -1,7 +1,7 @@
 diff --git a/iokit/KernelConfigTables.cpp b/iokit/KernelConfigTables.cpp
 --- a/iokit/KernelConfigTables.cpp
 +++ b/iokit/KernelConfigTables.cpp
-@@ -34,6 +34,14 @@
+@@ -34,6 +34,22 @@
  
  const char * gIOKernelConfigTables =
      "("
@@ -11,6 +11,14 @@ diff --git a/iokit/KernelConfigTables.cpp b/iokit/KernelConfigTables.cpp
 +    "     'IOProviderClass' = IOPlatformExpertDevice;"
 +    "     'IONameMatch'     = 'xiaomi,sweet';"
 +    "     'IOProbeScore'    = 10000:32;"
++    "   },"
++#endif
++#if defined(ARM64_BOARD_CONFIG_POLARIS)
++    "   {"
++    "     'IOClass'         = SweetPlatformExpert;"
++    "     'IOProviderClass' = IOPlatformExpertDevice;"
++    "     'IONameMatch'     = 'D22AP';"
++    "     'IOProbeScore'    = 10001:32;"
 +    "   },"
 +#endif
      "   {"
