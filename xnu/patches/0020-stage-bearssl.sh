@@ -9,8 +9,14 @@ bearssl_sha=7bea48e5e850ab4cafbe68d3765cdaba13a86d6f
 bearssl_tmp=$(mktemp -d)
 trap 'rm -rf "$bearssl_tmp"' EXIT
 git init -q "$bearssl_tmp"
-git -C "$bearssl_tmp" fetch -q --depth 1 \
-    https://www.bearssl.org/git/BearSSL "$bearssl_sha"
+ok=0
+for attempt in 1 2 3 4 5; do
+    if git -C "$bearssl_tmp" fetch -q --depth 1 \
+        https://www.bearssl.org/git/BearSSL "$bearssl_sha"; then ok=1; break; fi
+    echo "bearssl fetch attempt ${attempt} failed, retrying in 10s" >&2
+    sleep 10
+done
+[[ "$ok" == 1 ]] || { echo "FATAL: cannot fetch BearSSL ${bearssl_sha} - network" >&2; exit 1; }
 git -C "$bearssl_tmp" checkout -q FETCH_HEAD
 [[ "$(git -C "$bearssl_tmp" rev-parse HEAD)" == "$bearssl_sha" ]]
 python3 - "$bearssl_tmp" <<'PY'
@@ -43,5 +49,11 @@ for name in ('hash/md5.c', 'codec/dec32le.c', 'codec/enc32le.c',
     (target / 'src' / name).parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source / 'src' / name, target / 'src' / name)
 shutil.copy2(source / 'LICENSE.txt', target / 'LICENSE.txt')
+required = ["inc/bearssl.h", "src/inner.h", "src/symcipher/aes_ct.c",
+            "src/hash/md5.c", "src/codec/enc32le.c", "src/hash/sha1.c"]
+for rel in required:
+    if not (target / rel).exists():
+        raise SystemExit(f"FATAL: staged BearSSL tree is incomplete, missing {rel}")
+print("verified staged BearSSL tree")
 PY
 echo "Staged BearSSL portable AES, MD5, SHA-1 and SHA-384/512 ($bearssl_sha) for SWEET"

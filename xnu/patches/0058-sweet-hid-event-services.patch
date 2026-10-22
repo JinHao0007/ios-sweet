@@ -12,7 +12,7 @@
 +++ b/iokit/KernelConfigTables.cpp
 @@ -67,6 +67,16 @@
      "     'IOProviderClass' = IOPlatformDevice;"
-     "     'IONameMatch'     = 'sweet,display';"
+     "     'IONameMatch'     = 'polaris,display';"
      "   },"
 +    "   {"
 +    "     'IOClass'         = SweetHIDButtons;"
