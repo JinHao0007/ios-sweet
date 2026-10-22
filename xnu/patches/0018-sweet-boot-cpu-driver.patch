@@ -177,24 +177,16 @@ new file mode 100644
 diff --git a/iokit/KernelConfigTables.cpp b/iokit/KernelConfigTables.cpp
 --- a/iokit/KernelConfigTables.cpp
 +++ b/iokit/KernelConfigTables.cpp
-@@ -41,6 +41,20 @@
+@@ -41,6 +41,12 @@
      "     'IONameMatch'     = 'xiaomi,sweet';"
      "     'IOProbeScore'    = 10000:32;"
      "   },"
 +    "   {"
 +    "     'IOClass'         = SweetCPU;"
 +    "     'IOProviderClass' = IOPlatformDevice;"
-+    "     'IONameMatch'     = 'qcom,kryo470';"
++    "     'IONameMatch'     = 'qcom,kryo385';"
 +    "     'IOProbeScore'    = 10000:32;"
 +    "   },"
-+#if defined(ARM64_BOARD_CONFIG_POLARIS)
-+    "   {"
-+    "     'IOClass'         = SweetCPU;"
-+    "     'IOProviderClass' = IOPlatformDevice;"
-+    "     'IONameMatch'     = 'qcom,kryo385';"
-+    "     'IOProbeScore'    = 10001:32;"
-+    "   },"
-+#endif
  #endif
      "   {"
      "     'IOClass'         = IOPanicPlatform;"
