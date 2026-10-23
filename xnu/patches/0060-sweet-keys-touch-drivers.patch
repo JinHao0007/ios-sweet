@@ -32,7 +32,7 @@
  
 --- /dev/null
 +++ b/bsd/dev/sweet_keys.c
-@@ -0,0 +1,212 @@
+@@ -0,0 +1,182 @@
 +/*
 + * Minimal polled SWEET keys. Call once after the scheduler is running.
 + * See hw-report.md: volume-up is PM6150L SID 4, NOT PM6150 SID 0.
@@ -47,9 +47,6 @@
 +#include <kern/sched_prim.h>
 +#include <machine/machine_routines.h>
 +#include <pexpert/pexpert.h>
-+#include <sys/proc.h>
-+#include <sys/proc_internal.h>
-+#include <kern/task.h>
 +
 +extern vm_offset_t ml_io_map(vm_offset_t, vm_size_t);
 +extern void sweet_hid_key(int key, int down);
@@ -154,10 +151,6 @@
 +				printf("SWEET KEYS: key=%d down=%d pon=%#x gpio4:c110=%#x\n",
 +				    k, state[k], pon, gpio);
 +				sweet_hid_key(k, state[k]);
-+				if (k == 1 && state[k]) {
-+					extern void sweet_keys_dump(void);
-+					sweet_keys_dump();
-+				}
 +			}
 +		}
 +		keys_wait();
@@ -222,28 +215,6 @@
 +	}
 +}
 +#endif /* ARM64_BOARD_CONFIG_SWEET */
-+/* Volume-up: dump every process's thread stacks (diagnostic helper). */
-+extern void sweet_sample_task(const char *name, int pid, task_t task);
-+
-+static int
-+keys_dump_proc(proc_t p, __unused void *arg)
-+{
-+	char name[33];
-+	task_t t = proc_task(p);
-+	(void)arg;
-+	if (t != TASK_NULL) {
-+		proc_name(proc_pid(p), name, sizeof(name));
-+		sweet_sample_task(name, proc_pid(p), t);
-+	}
-+	return PROC_RETURNED;
-+}
-+
-+void
-+sweet_keys_dump(void)
-+{
-+	printf("SMP === key dump ===\n");
-+	proc_iterate(PROC_ALLPROCLIST, keys_dump_proc, NULL, NULL, NULL);
-+}
 --- /dev/null
 +++ b/bsd/dev/sweet_touch.c
 @@ -0,0 +1,568 @@
